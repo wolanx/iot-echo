@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"bytes"
@@ -8,10 +8,10 @@ import (
 )
 
 type AuthInfo struct {
-	password, username, mqttClientId string
+	Password, Username, MqttClientId string
 }
 
-func calculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp string) AuthInfo {
+func CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp string) AuthInfo {
 	var rawPasswd bytes.Buffer
 	rawPasswd.WriteString("clientId" + clientId)
 	rawPasswd.WriteString("deviceName")
@@ -29,13 +29,13 @@ func calculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp str
 	fmt.Println(password)
 	username := deviceName + "&" + productKey
 
-	var MQTTClientId bytes.Buffer
+	MQTTClientId := bytes.Buffer{}
 	MQTTClientId.WriteString(clientId)
 	// hmac, use sha1; securemode=2 means TLS connection
 	MQTTClientId.WriteString("|securemode=2,_v=paho-go-1.0.0,signmethod=hmacsha1,timestamp=")
 	MQTTClientId.WriteString(timeStamp)
 	MQTTClientId.WriteString("|")
 
-	auth := AuthInfo{password: password, username: username, mqttClientId: MQTTClientId.String()}
+	auth := AuthInfo{Password: password, Username: username, MqttClientId: MQTTClientId.String()}
 	return auth
 }
