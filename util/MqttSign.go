@@ -8,7 +8,9 @@ import (
 )
 
 type AuthInfo struct {
-	Password, Username, MqttClientId string
+	Username,
+	Password,
+	MqttClientId string
 }
 
 func CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp string) AuthInfo {
@@ -36,6 +38,9 @@ func CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp str
 	MQTTClientId.WriteString(timeStamp)
 	MQTTClientId.WriteString("|")
 
-	auth := AuthInfo{Password: password, Username: username, MqttClientId: MQTTClientId.String()}
+	auth := AuthInfo{
+		Username:     username,
+		Password:     password,
+		MqttClientId: MQTTClientId.String()}
 	return auth
 }
