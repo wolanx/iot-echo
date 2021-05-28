@@ -13,7 +13,7 @@ import (
 // DefaultPublishHandler define a function for the default message handler
 var DefaultPublishHandler MQTT.MessageHandler = func(client MQTT.Client, msg MQTT.Message) {
 	log.Info("topic", msg.Topic())
-	fmt.Println(string(msg.Payload()))
+	fmt.Println("payload =",string(msg.Payload()))
 }
 
 func main() {
@@ -25,6 +25,7 @@ func main() {
 		subTopicUserGet    = "/" + productKey + "/" + deviceName + "/user/get"
 		pubTopicUserUpdate = "/" + productKey + "/" + deviceName + "/user/update"
 	)
+	fmt.Println(subTopicUserGet)
 
 	opts := MQTT.NewClientOptions().AddBroker("tls://" + productKey + ".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883")
 
@@ -71,6 +72,6 @@ func main() {
 		token := c.Publish(pubTopicUserUpdate, 0, false, text)
 		token.Wait()
 		fmt.Println("publish msg:", i, text)
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(2000 * time.Millisecond)
 	}
 }
