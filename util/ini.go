@@ -1,7 +1,6 @@
-package main
+package util
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os/user"
 
@@ -9,26 +8,25 @@ import (
 	"gopkg.in/gcfg.v1"
 )
 
-func main() {
+var PConfig PConfigModel
+
+type PConfigModel struct {
+	AliYun struct {
+		ProductKey   string
+		DeviceName   string
+		DeviceSecret string
+	}
+}
+
+func LoadIni() {
 	current, _ := user.Current()
 	filename := current.HomeDir + "/.iot-echo/iot-echo.ini"
 	_, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Error(err)
 	}
-
-	iniCtx := struct {
-		AliYun struct {
-			ProductKey string
-			DeviceName string
-			DeviceSecret string
-		}
-	}{}
-	err2 := gcfg.ReadFileInto(&iniCtx, filename)
+	err2 := gcfg.ReadFileInto(&PConfig, filename)
 	if err2 != nil {
 		println(err2)
 	}
-	fmt.Println(iniCtx.AliYun)
-	fmt.Println(iniCtx.AliYun.DeviceName)
-	fmt.Println()
 }
