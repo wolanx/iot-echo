@@ -67,8 +67,10 @@ func main() {
 
 	for i := 1; ; i++ {
 		text := fmt.Sprintf("ABC #%d", i)
-		//token := c.Publish(pubTopicUserUpdate, 0, false, text)
-		//token.Wait()
+		if i % 10 ==0 {
+			token := c.Publish(pubTopicUserUpdate, 0, false, text)
+			token.Wait()
+		}
 		fmt.Println("publish msg:", i, text)
 		time.Sleep(2 * time.Second)
 	}
