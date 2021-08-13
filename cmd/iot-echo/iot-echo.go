@@ -30,6 +30,7 @@ func main() {
 	fmt.Println(pubTopicUserUpdate)
 
 	opts := MQTT.NewClientOptions().AddBroker("tls://" + productKey + ".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883")
+	// opts := MQTT.NewClientOptions().AddBroker("tcp://localhost:1883")
 
 	auth := util.CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp)
 	opts.SetClientID(auth.MqttClientId)

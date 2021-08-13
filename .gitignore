@@ -2,4 +2,5 @@
 vendor
 
 iot-echo.exe
+iothub-echo.exe
 iot-echo
