@@ -22,13 +22,13 @@ func CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp str
 	rawPasswd.WriteString(productKey)
 	rawPasswd.WriteString("timestamp")
 	rawPasswd.WriteString(timeStamp)
-	fmt.Println(rawPasswd.String())
+
+	//fmt.Println(rawPasswd.String())
 
 	// hmac, use sha1
 	mac := hmac.New(sha1.New, []byte(deviceSecret))
 	mac.Write([]byte(rawPasswd.String()))
 	password := fmt.Sprintf("%02x", mac.Sum(nil))
-	fmt.Println(password)
 	username := deviceName + "&" + productKey
 
 	MQTTClientId := bytes.Buffer{}
@@ -38,9 +38,9 @@ func CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp str
 	MQTTClientId.WriteString(timeStamp)
 	MQTTClientId.WriteString("|")
 
-	auth := AuthInfo{
+	return AuthInfo{
 		Username:     username,
 		Password:     password,
-		MqttClientId: MQTTClientId.String()}
-	return auth
+		MqttClientId: MQTTClientId.String(),
+	}
 }

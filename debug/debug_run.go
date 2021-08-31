@@ -1,36 +1,44 @@
-package main
+package debug
 
 import (
 	"fmt"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"github.com/mitchellh/mapstructure"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/zx5435/iot-echo/config"
+	"github.com/zx5435/iot-echo/util"
 	"os"
 	"time"
-
-	MQTT "github.com/eclipse/paho.mqtt.golang"
-	log "github.com/sirupsen/logrus"
-	"github.com/zx5435/iot-echo/util"
 )
 
-func init() {
-	util.LoadIni()
-}
-
-func main() {
+func Run(cmd *cobra.Command, args []string) {
+	maps := viper.AllSettings()
+	var conf config.Model
+	_ = mapstructure.Decode(maps, &conf)
 	var (
-		productKey   = util.PConfig.AliYun.ProductKey
-		deviceName   = util.PConfig.AliYun.DeviceName
-		deviceSecret = util.PConfig.AliYun.DeviceSecret
+		productKey   = conf.Device.ProductKey
+		deviceName   = conf.Device.DeviceName
+		deviceSecret = conf.Device.DeviceSecret
 	)
-	log.SetFormatter(&log.TextFormatter{})
 	var (
 		timeStamp          = "1528018257135"
 		clientId           = "go_device_id_0001"
 		subTopicUserGet    = "/" + productKey + "/" + deviceName + "/user/get"
 		pubTopicUserUpdate = "/" + productKey + "/" + deviceName + "/user/update"
 	)
-	fmt.Println(pubTopicUserUpdate)
 
-	opts := MQTT.NewClientOptions().AddBroker("tls://" + productKey + ".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883")
-	// opts := MQTT.NewClientOptions().AddBroker("tcp://localhost:1883")
+	// tcp://localhost:1883
+	//url := "tls://" + productKey + ".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883"
+	url := conf.Server.Host + ":1883"
+	if conf.Server.Tls {
+		url = "tls://" + url
+	} else {
+		url = "tcp://" + url
+	}
+	fmt.Println(url)
+	opts := MQTT.NewClientOptions().AddBroker(url)
 
 	auth := util.CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp)
 	opts.SetClientID(auth.MqttClientId)
@@ -68,7 +76,7 @@ func main() {
 
 	for i := 1; ; i++ {
 		text := fmt.Sprintf("ABC #%d", i)
-		if i % 10 ==0 {
+		if i%10 == 0 {
 			token := c.Publish(pubTopicUserUpdate, 0, false, text)
 			token.Wait()
 		}

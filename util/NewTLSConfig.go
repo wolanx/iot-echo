@@ -14,7 +14,6 @@ func NewTLSConfig() *tls.Config {
 	pemCerts, err := ioutil.ReadFile("./x509/root.pem")
 	if err != nil {
 		fmt.Println("0. read file error, game over!!")
-
 	}
 
 	certpool.AppendCertsFromPEM(pemCerts)
