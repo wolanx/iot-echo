@@ -3,9 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/zx5435/iot-echo/config"
 )
 
@@ -15,11 +13,8 @@ var infoCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	Long:  `A longer description. `,
 	Run: func(cmd *cobra.Command, args []string) {
-		maps := viper.AllSettings()
-		var config config.Model
-		_ = mapstructure.Decode(maps, &config)
-		marshal, _ := json.MarshalIndent(config, "", "\t")
-		fmt.Println(string(marshal))
+		cfb, _ := json.MarshalIndent(config.GetConfig(), "", "\t")
+		fmt.Println(string(cfb))
 	},
 }
 
