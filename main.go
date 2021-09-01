@@ -6,6 +6,7 @@ import (
 )
 
 func init() {
+	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(&log.TextFormatter{})
 }
 

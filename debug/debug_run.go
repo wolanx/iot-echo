@@ -2,16 +2,17 @@ package debug
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/zx5435/iot-echo/config"
 	"github.com/zx5435/iot-echo/message"
 	"github.com/zx5435/iot-echo/util"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 func Run(cmd *cobra.Command, args []string) {

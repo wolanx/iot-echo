@@ -1,4 +1,10 @@
-[AliYun]
-ProductKey=
-DeviceName=
-DeviceSecret=
+provider: iothub-echo
+server:
+  host: { }
+  tls: false
+device:
+  productKey: { }
+  deviceName: { }
+  deviceSecret: { }
+params:
+metric:

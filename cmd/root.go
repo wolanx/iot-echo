@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 
 	"github.com/spf13/viper"
 )
@@ -14,7 +15,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "iot-echo",
 	Short: "A brief description of your application",
-	Long: `iot-echo controls the IoT device lifecycle.`,
+	Long:  `iot-echo controls the IoT device lifecycle.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -60,6 +61,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		log.Debug("Using config file:", viper.ConfigFileUsed())
 	}
 }

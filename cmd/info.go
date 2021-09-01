@@ -3,15 +3,15 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/zx5435/iot-echo/config"
 )
 
-// infoCmd represents the info command
 var infoCmd = &cobra.Command{
 	Use:   "info",
-	Short: "A brief description of your command",
-	Long:  `A longer description. `,
+	Short: "Short command",
+	Long:  "Long description.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfb, _ := json.MarshalIndent(config.GetConfig(), "", "\t")
 		fmt.Println(string(cfb))

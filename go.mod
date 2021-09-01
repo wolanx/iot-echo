@@ -6,7 +6,7 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/mitchellh/mapstructure v1.4.1
-	github.com/shirou/gopsutil v3.21.7+incompatible // indirect
+	github.com/shirou/gopsutil v3.21.7+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
