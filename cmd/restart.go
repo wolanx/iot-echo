@@ -11,7 +11,9 @@ var restartCmd = &cobra.Command{
 	Short: "Stop and start",
 	Long:  "Long description.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("restart called")
+		DoStop(cmd, args)
+		DoStart(cmd, args)
+		fmt.Println("Restart is successful")
 	},
 }
 
