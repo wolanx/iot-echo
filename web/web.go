@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -11,7 +12,10 @@ import (
 func DefaultWeb() {
 	http.HandleFunc("/", sayHello)
 	err := http.ListenAndServe(":8883", nil)
-	log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
 }
 
 func sayHello(w http.ResponseWriter, r *http.Request) {

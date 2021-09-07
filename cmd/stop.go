@@ -13,7 +13,7 @@ import (
 
 var stopCmd = &cobra.Command{
 	Use:   "stop",
-	Short: "Short command",
+	Short: "Stop daemon process",
 	Long:  "Long description.",
 	Run:   DoStop,
 }
@@ -26,22 +26,23 @@ func DoStop(cmd *cobra.Command, args []string) {
 	pidByte, err := ioutil.ReadFile(fmt.Sprintf("%s/.lock", config.Dir))
 	if err != nil {
 		log.Error(err.Error())
-	} else {
-		pid := string(pidByte)
-		fmt.Println("pid", pid)
+		log.Warning("maybe need manual kill it: pkill iot-echo")
+		return
+	}
 
-		command := exec.Command("kill", pid)
-		err = command.Start()
-		if err != nil {
-			fmt.Print(err.Error())
-		}
-		fmt.Println(`maybe need manual kill it.
-	ps -ef | grep iot-echo
-	kill $pid`)
-		err := os.Remove(config.Dir + "/.lock")
-		if err != nil {
-			fmt.Print(err.Error())
-		}
+	pid := string(pidByte)
+	log.Info("[PID] " + pid + " killing...")
+
+	command := exec.Command("kill", pid)
+	output, err := command.CombinedOutput()
+	if err != nil {
+		log.Error(err.Error())
+		log.Warning(string(output))
+		log.Warning("maybe need manual kill it: pkill iot-echo")
+	}
+	if err := os.Remove(config.Dir + "/.lock"); err != nil {
+		log.Error(err.Error())
+		return
 	}
 
 	fmt.Println("Stop is successful")

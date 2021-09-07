@@ -8,13 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/zx5435/iot-echo/config"
 )
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "Short command",
+	Short: "Start daemon process",
 	Long:  "Long description.",
 	Run:   DoStart,
 }
@@ -30,18 +31,25 @@ func DoStart(cmd *cobra.Command, args []string) {
 	}
 	appName := strings.TrimLeft(os.Args[0], "./")
 	bin := fmt.Sprintf("%s/%s", dir, appName)
-	fmt.Println(bin) // /www/iot-echo/iot-echo
+
+	if _, err := os.Stat(config.Dir + "/.lock"); err == nil || os.IsExist(err) {
+		log.Warn(".lock is exist")
+		return
+	}
 
 	command := exec.Command(bin, "run")
 	err = command.Start()
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return
 	}
 
 	pid := command.Process.Pid
-	fmt.Printf("%s start, [PID] %d running...\n", bin, pid)
+	log.Infof("[PID] %d running...\n", pid)
 	err = ioutil.WriteFile(config.Dir+"/.lock", []byte(fmt.Sprintf("%d", pid)), 0666)
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("Start is successful")
 }

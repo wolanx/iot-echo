@@ -8,10 +8,10 @@ import (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Short command",
+	Short: "Initialize environment",
 	Long:  "Long description.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		fmt.Println("init todo")
 	},
 }
 

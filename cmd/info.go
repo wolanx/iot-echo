@@ -10,7 +10,7 @@ import (
 
 var infoCmd = &cobra.Command{
 	Use:   "info",
-	Short: "Short command",
+	Short: "Show description",
 	Long:  "Long description.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cfb, _ := json.MarshalIndent(config.GetConfig(), "", "\t")

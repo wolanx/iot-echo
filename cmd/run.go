@@ -9,10 +9,10 @@ import (
 
 var testCmd = &cobra.Command{
 	Use:   "run",
-	Short: "Daemon server",
+	Short: "Run daemon process",
 	Long:  "Long description.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Daemon called")
+		fmt.Println("Run called")
 
 		web.DefaultWeb()
 	},
