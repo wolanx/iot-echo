@@ -25,8 +25,10 @@ func init() {
 }
 
 func GetConfig() *Model {
-	fmt.Println("config init.")
-	maps := viper.AllSettings()
-	_ = mapstructure.Decode(maps, &v)
+	if v == nil {
+		fmt.Println("config init.")
+		maps := viper.AllSettings()
+		_ = mapstructure.Decode(maps, &v)
+	}
 	return v
 }
