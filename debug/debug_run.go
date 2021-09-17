@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/zx5435/iot-echo/config"
 	"github.com/zx5435/iot-echo/message"
+	"github.com/zx5435/iot-echo/mqtt"
 	"github.com/zx5435/iot-echo/util"
 )
 
@@ -32,16 +33,17 @@ func Run(cmd *cobra.Command, args []string) {
 
 	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
-	} else {
-		log.Debug("Connect IoT Cloud Success")
 	}
+	log.Debug("Connect ok")
 
-	if token := c.Subscribe(topicUserGet, 0, nil); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
-	} else {
-		log.Info("Subscribe topic " + topicUserGet + " success")
-	}
+	mqtt.Subscribe(c, topicUserGet)
+	mqtt.Subscribe(c, "/ota/device/upgrade/"+productKey+"/"+deviceName)
+	// todo restart
+
+	mqtt.Publish(c, "/ota/device/inform/"+productKey+"/"+deviceName, "0.1.0")
+	mqtt.Publish(c, "/ota/device/progress/"+productKey+"/"+deviceName, "10%")
+	mqtt.Publish(c, "/ota/device/progress/"+productKey+"/"+deviceName, "20%")
+	mqtt.Publish(c, "/ota/device/inform/"+productKey+"/"+deviceName, "0.2.0")
 
 	go func() {
 		<-sig
@@ -56,9 +58,7 @@ func Run(cmd *cobra.Command, args []string) {
 
 	for i := 1; ; i++ {
 		msg := message.GetMetric()
-		token := c.Publish(topicUserUpdate, 0, false, msg)
-		token.Wait()
-		fmt.Println("publish msg:", msg)
+		mqtt.Publish(c, topicUserUpdate, msg)
 		time.Sleep(3 * time.Second)
 	}
 }
