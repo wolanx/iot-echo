@@ -1,8 +1,10 @@
 package main
 
 import (
+	"flag"
 	log2 "log"
 	"os"
+	"strconv"
 	"time"
 	"unsafe"
 
@@ -10,11 +12,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var tty *int
+
+// Modbus总结
+// https://www.cnblogs.com/iluzhiyong/p/4301192.html
 func main() {
 	log.SetFormatter(&log.TextFormatter{})
+	tty = flag.Int("tty", 2, "tty flag")
+	flag.Parse()
+
 	log.Info("IsLittleEndian", IsLittleEndian())
 
-	testMbRtuSlave10()
+	testGeNi32()
 }
 
 func IsLittleEndian() bool {
@@ -29,7 +38,29 @@ func IsLittleEndian() bool {
 	return true
 }
 
+func testGeNi32() {
+	// tty 4 geni
+	address := "/dev/ttyO" + strconv.Itoa(*tty)
+	log.Info(address)
+	handler := modbus.NewRTUClientHandler(address)
+	handler.BaudRate = 38400
+	handler.DataBits = 8
+	handler.Parity = "N"
+	handler.StopBits = 1
+	handler.Timeout = 10 * time.Second
+	handler.SlaveId = 0x24
+	handler.Logger = log2.New(os.Stdout, "test: ", log2.Lshortfile)
+	err := handler.Connect()
+	doLog1(err)
+	defer handler.Close()
+
+	client := modbus.NewClient(handler)
+	results, err := ReadByRaw(client, []byte{0x27, 0x07, 0x5A, 0x01, 0x0A, 0x03, 0x52, 0x00, 0x0A, 0x19, 0x36})
+	doLog2(err, results)
+}
+
 func testMbRtuSlave10() {
+	// tty 2 modbus
 	address := "/dev/ttyO2"
 	log.Info(address)
 	handler := modbus.NewRTUClientHandler(address)
