@@ -65,11 +65,15 @@ func Run(cmd *cobra.Command, args []string) {
 
 func NewClient(productKey string, deviceName string, deviceSecret string) MQTT.Client {
 	cfg := config.GetConfig()
-	url := cfg.Server.Host + ":1883"
-	if cfg.Server.Tls {
-		url = "tls://" + url
+	var url string
+	if cfg.Provider == "iothub-echo" {
+		if cfg.Server.Tls {
+			url = "tls://" + cfg.Server.Host + ":1883"
+		} else {
+			url = "tcp://" + cfg.Server.Host + ":1883"
+		}
 	} else {
-		url = "tcp://" + url
+		url = "tls://" + cfg.Device.ProductKey + ".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883"
 	}
 	fmt.Println(url)
 
@@ -81,8 +85,10 @@ func NewClient(productKey string, deviceName string, deviceSecret string) MQTT.C
 	opt.SetKeepAlive(1 * 60 * time.Second)
 	opt.SetDefaultPublishHandler(util.DefaultPublishHandler)
 
-	//tlsconfig := util.NewTLSConfig()
-	//opt.SetTLSConfig(tlsconfig)
+	if cfg.Server.Tls {
+		tlsconfig := util.NewTLSConfig()
+		opt.SetTLSConfig(tlsconfig)
+	}
 
 	c := MQTT.NewClient(opt)
 	return c

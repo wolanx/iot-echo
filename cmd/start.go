@@ -31,6 +31,7 @@ func DoStart(cmd *cobra.Command, args []string) {
 	}
 	appName := strings.TrimLeft(os.Args[0], "./")
 	bin := fmt.Sprintf("%s/%s", dir, appName)
+	bin = "iot-echo"
 
 	if _, err := os.Stat(config.Dir + "/.lock"); err == nil || os.IsExist(err) {
 		log.Warn(".lock is exist")
