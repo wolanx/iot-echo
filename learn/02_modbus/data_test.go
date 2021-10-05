@@ -53,3 +53,7 @@ func TestCrc(t *testing.T) {
 	}, table)
 	fmt.Printf("%x\n", crc)
 }
+
+func TestBuildGeNiBus(t *testing.T) {
+	fmt.Printf("% x\n", BuildGeNiBus(0x27, 0x20, 0x01, []byte{0x02, 0x01, 0x3E}))
+}

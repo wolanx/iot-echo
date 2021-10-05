@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"unsafe"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/zx5435/iot-echo/protocol/crc16"
 	"github.com/zx5435/iot-echo/protocol/modbus"
 )
 
@@ -63,4 +65,22 @@ func ReadByRaw(mb modbus.Client, r []byte) (results []byte, err error) {
 	}
 	results = response.Data[1:]
 	return
+}
+
+func BuildGeNiBus(addr byte, from byte, to byte, data []byte) []byte {
+
+	table := crc16.MakeTable(crc16.CRC16_GENIBUS)
+	crc := crc16.Checksum([]byte{
+		//0x02, 0x07, 0x20, 0x22, 0x25, 0x27, 0x51, 0x98, 0x99,
+		0x02, 0x01, 0x3E,
+	}, table)
+	ret := []byte{addr}
+	ret = append(ret, byte(len(data)+2))
+	ret = append(ret, from)
+	ret = append(ret, to)
+	ret = append(ret, data...)
+	buf := []byte{0x00, 0x00}
+	binary.BigEndian.PutUint16(buf, crc)
+	ret = append(ret, buf...)
+	return ret
 }
