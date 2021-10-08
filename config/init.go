@@ -15,11 +15,12 @@ var v *Model
 
 func init() {
 	dir, _ := os.UserHomeDir()
-	Dir = dir + "/iot-echo"
+	Dir = dir + "/.iot-echo"
 	if _, err := os.Stat(Dir); err != nil {
 		err := os.Mkdir(Dir, os.ModeDir)
 		if err != nil {
 			log.Error(err.Error())
+			os.Exit(1)
 		}
 	}
 }

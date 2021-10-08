@@ -5,6 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/zx5435/iot-echo/config"
 
 	"github.com/spf13/viper"
 )
@@ -34,7 +35,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ~/.iot-echo/iot-echo.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ~/.iot-echo/config.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -48,13 +49,13 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
-		home, err := os.UserHomeDir()
+		_, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".demo" (without extension).
-		viper.AddConfigPath(home + "/.iot-echo")
+		viper.AddConfigPath(config.Dir)
+		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
-		viper.SetConfigName("iot-echo")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

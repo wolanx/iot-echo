@@ -77,7 +77,7 @@ func testModbusTcpSlave10() {
 }
 
 func testGeNi32(tty int) {
-	// tty 4 geni
+	// tty 4 GeNi
 	address := "/dev/ttyO" + strconv.Itoa(tty)
 	handler := modbus.NewRTUClientHandler(address)
 	handler.BaudRate = 9600
