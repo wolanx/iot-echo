@@ -1,6 +1,6 @@
 package config
 
-type Model struct {
+type Config struct {
 	Provider string
 	Server   struct {
 		Host string

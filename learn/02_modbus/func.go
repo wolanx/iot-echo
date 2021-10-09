@@ -68,8 +68,7 @@ func ReadByRaw(mb modbus.Client, r []byte) (results []byte, err error) {
 }
 
 func BuildGeNiBus(addr byte, from byte, to byte, data []byte) []byte {
-
-	table := crc16.MakeTable(crc16.CRC16_GENIBUS)
+	table := crc16.MakeTable()
 	crc := crc16.Checksum([]byte{
 		//0x02, 0x07, 0x20, 0x22, 0x25, 0x27, 0x51, 0x98, 0x99,
 		0x02, 0x01, 0x3E,

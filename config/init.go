@@ -11,7 +11,7 @@ import (
 
 var Dir string
 
-var v *Model
+var v *Config
 
 func init() {
 	dir, _ := os.UserHomeDir()
@@ -25,7 +25,7 @@ func init() {
 	}
 }
 
-func GetConfig() *Model {
+func GetConfig() *Config {
 	if v == nil {
 		fmt.Println("config init.")
 		maps := viper.AllSettings()
