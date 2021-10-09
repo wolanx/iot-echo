@@ -15,7 +15,8 @@ func TestP(t *testing.T) {
 	params := &config.Params{}
 	params.Init(s)
 	params.LoadGroup()
-	params.Print()
+	//params.Print()
+	params.LoadData()
 }
 
 func FileGetContents(path string) string {
