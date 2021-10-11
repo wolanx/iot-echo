@@ -71,6 +71,7 @@ func (e *ModbusError) Error() string {
 type ProtocolDataUnit struct {
 	FunctionCode byte
 	Data         []byte
+	SlaveId      byte
 }
 
 // Packager specifies the communication layer.

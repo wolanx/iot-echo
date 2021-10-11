@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/zx5435/iot-echo/protocol/modbus"
+	"github.com/zx5435/iot-echo/util"
 	"gopkg.in/yaml.v2"
 )
 
@@ -111,17 +112,47 @@ func createClientByChannel(c Channel) modbus.Client {
 	return nil
 }
 
-func (p *Params) LoadData() {
+func (p *Params) LoadData() map[string]interface{} {
+	ret := make(map[string]interface{})
 	for _, group := range p.DataGroups {
-		log.Infof("%+v", group.Client)
 		for _, point := range group.Points {
-			log.Infof("%+v", point)
-			data, err := group.Client.ReadHoldingRegisters(point.Address, 10)
+			log.Debugf("%+v", point)
+			var data []byte
+			var err error
+			switch point.DataType {
+			case "int":
+				data, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 1)
+				break
+			case "float":
+				data, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 2)
+				break
+			default:
+				data, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 1)
+			}
+
 			if err != nil {
 				log.Error(err)
 				continue
 			}
-			log.Infof("% x", data)
+			log.Debugf("% x", data)
+
+			switch point.DataType {
+			case "int":
+				toInt := util.Byte2ToInt(data)
+				log.Info(toInt)
+				ret[point.Name] = toInt
+				break
+			case "float":
+				toFloat32 := util.Byte4ToFloat32(data)
+				log.Info(toFloat32)
+				ret[point.Name] = toFloat32
+				break
+			default:
+				toInt := util.Byte2ToInt(data)
+				log.Info(toInt)
+				ret[point.Name] = toInt
+			}
 		}
 	}
+	return ret
 }

@@ -3,6 +3,8 @@ package modbus
 import (
 	"encoding/binary"
 	"fmt"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // ClientHandler is the interface that groups the Packager and Transporter methods.
@@ -91,7 +93,7 @@ func (mb *client) ReadDiscreteInputs(address, quantity uint16) (results []byte, 
 //  Function code         : 1 byte (0x03)
 //  Byte count            : 1 byte
 //  Register value        : Nx2 bytes
-func (mb *client) ReadHoldingRegisters(address, quantity uint16) (results []byte, err error) {
+func (mb *client) ReadHoldingRegisters(slaveId byte, address, quantity uint16) (results []byte, err error) {
 	if quantity < 1 || quantity > 125 {
 		err = fmt.Errorf("modbus: quantity '%v' must be between '%v' and '%v'", quantity, 1, 125)
 		return
@@ -99,6 +101,7 @@ func (mb *client) ReadHoldingRegisters(address, quantity uint16) (results []byte
 	request := ProtocolDataUnit{
 		FunctionCode: FuncCodeReadHoldingRegisters,
 		Data:         dataBlock(address, quantity),
+		SlaveId:      slaveId,
 	}
 	response, err := mb.send(&request)
 	if err != nil {
@@ -428,6 +431,7 @@ func (mb *client) ReadFIFOQueue(address uint16) (results []byte, err error) {
 // send request and checks possible exception in the response.
 func (mb *client) send(request *ProtocolDataUnit) (response *ProtocolDataUnit, err error) {
 	aduRequest, err := mb.packager.Encode(request)
+	log.Debugf("send: % x", aduRequest)
 	if err != nil {
 		return
 	}

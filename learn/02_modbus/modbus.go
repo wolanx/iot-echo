@@ -57,7 +57,7 @@ func testModbusRtuSlave10() {
 	// ReadDiscreteInputs 02
 	// ReadHoldingRegisters 03
 	// ReadInputRegisters 04
-	results, err := client.ReadHoldingRegisters(6, 2)
+	results, err := client.ReadHoldingRegisters(0x0A, 6, 2)
 	doLog2(err, results)
 }
 

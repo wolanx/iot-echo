@@ -19,6 +19,7 @@ func init() {
 	//		return frame.Function, fileName
 	//	},
 	//})
+	log.SetLevel(log.DebugLevel)
 	log.SetReportCaller(true)
 	log.SetFormatter(&MyFormatter{})
 }
@@ -56,11 +57,11 @@ func (mf *MyFormatter) Format(entry *log.Entry) ([]byte, error) {
 		levelColor = blue
 	}
 	lino := fmt.Sprintf("%s:%d", path.Base(entry.Caller.File), entry.Caller.Line)
-	b.WriteString(fmt.Sprintf("[\u001B[%dm%.4s\u001B[0m] [%s] [%-15.15s] - %s\n",
-		levelColor,
-		strings.ToUpper(entry.Level.String()),
+	b.WriteString(fmt.Sprintf("[%s] [%-15.15s] [\u001B[%dm%.4s\u001B[0m] - %s\n",
 		entry.Time.Format("15:03:04.000"),
 		lino,
+		levelColor,
+		strings.ToUpper(entry.Level.String()),
 		entry.Message,
 	))
 	return b.Bytes(), nil
