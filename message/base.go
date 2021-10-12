@@ -9,11 +9,21 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
+	"github.com/zx5435/iot-echo/config"
 )
 
+var params *config.Params
+
+func init() {
+	params = config.NewParams()
+}
+
 func GetMetric() string {
+	//arr := make(map[string]interface{})
+	arr := params.LoadData()
+
 	cpuPct, memPct := getCpuMem()
-	arr := make(map[string]float64)
+	arr["sn"] = config.GetConfig().Device.DeviceName
 	arr["cpu"] = f2(cpuPct)
 	arr["mem"] = f2(memPct)
 	ret, _ := json.Marshal(arr)

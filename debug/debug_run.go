@@ -57,8 +57,8 @@ func Run(cmd *cobra.Command, args []string) {
 	}()
 
 	for i := 1; ; i++ {
-		msg := message.GetMetric()
-		mqtt.Publish(c, topicUserUpdate, msg)
+		msg1 := message.GetMetric()
+		mqtt.Publish(c, topicUserUpdate, msg1)
 		time.Sleep(3 * time.Second)
 	}
 }
@@ -86,8 +86,8 @@ func NewClient(productKey string, deviceName string, deviceSecret string) MQTT.C
 	opt.SetDefaultPublishHandler(util.DefaultPublishHandler)
 
 	if cfg.Server.Tls {
-		tlsconfig := util.NewTLSConfig()
-		opt.SetTLSConfig(tlsconfig)
+		tlsConfig := util.NewTLSConfig()
+		opt.SetTLSConfig(tlsConfig)
 	}
 
 	c := MQTT.NewClient(opt)

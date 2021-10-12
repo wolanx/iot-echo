@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -9,6 +10,13 @@ import (
 	"github.com/zx5435/iot-echo/util"
 	"gopkg.in/yaml.v2"
 )
+
+func NewParams() *Params {
+	yml := util.FileGetContents(Dir + "/params.yaml")
+	params := &Params{}
+	params.Init(yml)
+	return params
+}
 
 type Params struct {
 	Channels   []Channel
@@ -55,21 +63,7 @@ func (p *Params) Init(s string) {
 		log.Error(err)
 		return
 	}
-}
 
-func (p Params) Print() {
-	for _, channel := range p.Channels {
-		fmt.Printf("%+v\n", channel)
-	}
-	for _, attribute := range p.Attributes {
-		fmt.Printf("%+v\n", attribute)
-	}
-	for k, group := range p.DataGroups {
-		fmt.Printf("%s: %+v\n", k, group.Points)
-	}
-}
-
-func (p *Params) LoadGroup() {
 	p.DataGroups = make(map[string]*DataGroup)
 	for _, channel := range p.Channels {
 		p.DataGroups[channel.Name] = &DataGroup{
@@ -89,6 +83,18 @@ func (p *Params) LoadGroup() {
 			Address:  uint16(attribute.Address),
 			DataType: attribute.DataType,
 		})
+	}
+}
+
+func (p Params) Print() {
+	for _, channel := range p.Channels {
+		fmt.Printf("%+v\n", channel)
+	}
+	for _, attribute := range p.Attributes {
+		fmt.Printf("%+v\n", attribute)
+	}
+	for k, group := range p.DataGroups {
+		fmt.Printf("%s: %+v\n", k, group.Points)
 	}
 }
 
@@ -116,43 +122,37 @@ func (p *Params) LoadData() map[string]interface{} {
 	ret := make(map[string]interface{})
 	for _, group := range p.DataGroups {
 		for _, point := range group.Points {
-			log.Debugf("%+v", point)
-			var data []byte
-			var err error
-			switch point.DataType {
-			case "int":
-				data, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 1)
-				break
-			case "float":
-				data, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 2)
-				break
-			default:
-				data, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 1)
-			}
+			log.Debugf("%s * %+v", group.Name, point)
 
+			var (
+				xVal []byte
+				val  interface{}
+				err  error
+			)
+
+			switch point.DataType {
+			case "float":
+				xVal, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 2)
+				if err == nil {
+					val = util.Byte4ToFloat32(xVal)
+				}
+				break
+			case "int":
+				fallthrough
+			default:
+				xVal, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 1)
+				if err == nil {
+					val = util.Byte2ToInt(xVal)
+				}
+			}
 			if err != nil {
-				log.Error(err)
-				continue
+				log.Warn(err)
 			}
-			log.Debugf("% x", data)
-
-			switch point.DataType {
-			case "int":
-				toInt := util.Byte2ToInt(data)
-				log.Info(toInt)
-				ret[point.Name] = toInt
-				break
-			case "float":
-				toFloat32 := util.Byte4ToFloat32(data)
-				log.Info(toFloat32)
-				ret[point.Name] = toFloat32
-				break
-			default:
-				toInt := util.Byte2ToInt(data)
-				log.Info(toInt)
-				ret[point.Name] = toInt
-			}
+			log.Infof("%s [% x] = %v", point.Name, xVal, val)
+			ret[point.Name] = val
 		}
 	}
+	j, _ := json.MarshalIndent(ret, "", "  ")
+	fmt.Println(string(j))
 	return ret
 }
