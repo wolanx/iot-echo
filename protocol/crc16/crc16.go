@@ -32,7 +32,7 @@ func MakeTable() *Table {
 }
 
 func crcEach(data uint16) uint16 {
-	var accum uint16 = 0x00
+	var accum uint16 = 0x0000
 
 	data <<= 8
 	for i := 8; i > 0; i-- {
@@ -55,10 +55,10 @@ func Init(table *Table) uint16 {
 func Update(accum uint16, arr []byte, table *Table) uint16 {
 	accum = 0xffff
 	for _, data := range arr {
-		accum = (accum << 8) ^ table.data[byte(accum>>8)^data]
-		//comb_val := (accum >> 8) ^ uint16(data)
-		//tmp := crcEach(comb_val)
-		//accum = tmp ^ (accum << 8)
+		//accum = (accum << 8) ^ table.data[byte(accum>>8)^data]
+		comb_val := (accum >> 8) ^ uint16(data)
+		tmp := crcEach(comb_val)
+		accum = tmp ^ (accum << 8)
 	}
 	return accum
 }
@@ -66,5 +66,5 @@ func Update(accum uint16, arr []byte, table *Table) uint16 {
 func Checksum(data []byte, table *Table) uint16 {
 	crc := Init(table)
 	crc = Update(crc, data, table)
-	return crc
+	return crc ^ 0xffff
 }
