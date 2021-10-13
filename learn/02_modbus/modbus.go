@@ -32,7 +32,7 @@ func main() {
 
 	log.Info("IsLittleEndian", IsLittleEndian())
 
-	testGeNi32(4)
+	testGeni32(4)
 }
 
 func testModbusRtuSlave10() {
@@ -76,14 +76,14 @@ func testModbusTcpSlave10() {
 	doLog2(err, results)
 }
 
-func testGeNi32(tty int) {
-	// tty 4 GeNi
+func testGeni32(tty int) {
+	// tty 4 Geni
 	address := "/dev/ttyO" + strconv.Itoa(tty)
 	handler := modbus.NewRTUClientHandler(address)
 	handler.BaudRate = 9600
 	handler.DataBits = 8
 	handler.Parity = "N"
-	handler.StopBits = 2 // GeNi 是 2
+	handler.StopBits = 2 // Geni 是 2
 	handler.Timeout = 10 * time.Second
 	handler.SlaveId = 0x01
 	handler.Logger = log2.New(os.Stdout, "test: ", log2.Lshortfile)

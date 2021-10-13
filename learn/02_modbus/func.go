@@ -67,19 +67,18 @@ func ReadByRaw(mb modbus.Client, r []byte) (results []byte, err error) {
 	return
 }
 
-func BuildGeNiBus(addr byte, from byte, to byte, data []byte) []byte {
+// BuildGeniBus crc 从1开始到data
+func BuildGeniBus(addr byte, from byte, to byte, data []byte) []byte {
 	table := crc16.MakeTable()
-	crc := crc16.Checksum([]byte{
-		//0x02, 0x07, 0x20, 0x22, 0x25, 0x27, 0x51, 0x98, 0x99,
-		0x02, 0x01, 0x3E,
-	}, table)
-	ret := []byte{addr}
-	ret = append(ret, byte(len(data)+2))
-	ret = append(ret, from)
-	ret = append(ret, to)
+	l := len(data) + 2
+	checks := []byte{byte(l), from, to}
+	checks = append(checks, data...)
+	checksum := crc16.Checksum(checks, table)
+	crc := []byte{0x00, 0x00}
+	binary.BigEndian.PutUint16(crc, checksum)
+
+	ret := []byte{addr, byte(l), from, to}
 	ret = append(ret, data...)
-	buf := []byte{0x00, 0x00}
-	binary.BigEndian.PutUint16(buf, crc)
-	ret = append(ret, buf...)
+	ret = append(ret, crc...)
 	return ret
 }

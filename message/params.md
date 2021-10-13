@@ -23,7 +23,7 @@ attributes:
     dataType: float
 ```
 
-# GeNi
+# Geni
 
 ```yaml
 protocol: rtu
