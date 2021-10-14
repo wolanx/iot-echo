@@ -12,15 +12,9 @@ import (
 	"github.com/zx5435/iot-echo/config"
 )
 
-var params *config.Params
-
-func init() {
-	params = config.NewParams()
-}
-
 func GetMetric() string {
 	//arr := make(map[string]interface{})
-	arr := params.LoadData()
+	arr := config.ParamsIns.LoadData()
 
 	cpuPct, memPct := getCpuMem()
 	arr["sn"] = config.GetConfig().Device.DeviceName

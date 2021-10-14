@@ -38,6 +38,7 @@ func Run(cmd *cobra.Command, args []string) {
 
 	mqtt.Subscribe(c, topicUserGet)
 	mqtt.Subscribe(c, "/ota/device/upgrade/"+productKey+"/"+deviceName)
+	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/push")
 	// todo restart
 
 	mqtt.Publish(c, "/ota/device/inform/"+productKey+"/"+deviceName, "0.1.0")
@@ -83,7 +84,7 @@ func NewClient(productKey string, deviceName string, deviceSecret string) MQTT.C
 	opt.SetUsername(auth.Username)
 	opt.SetPassword(auth.Password)
 	opt.SetKeepAlive(1 * 60 * time.Second)
-	opt.SetDefaultPublishHandler(util.DefaultPublishHandler)
+	opt.SetDefaultPublishHandler(mqtt.DefaultPublishHandler)
 
 	if cfg.Server.Tls {
 		tlsConfig := util.NewTLSConfig()

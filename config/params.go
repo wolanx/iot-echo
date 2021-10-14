@@ -11,10 +11,17 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var ParamsIns *Params
+
+func init() {
+	NewParams()
+}
+
 func NewParams() *Params {
 	yml := util.FileGetContents(Dir + "/params.yaml")
 	params := &Params{}
 	params.Init(yml)
+	ParamsIns = params
 	return params
 }
 
@@ -136,7 +143,6 @@ func (p *Params) LoadData() map[string]interface{} {
 				if err == nil {
 					val = util.Byte4ToFloat32(xVal)
 				}
-				break
 			case "int":
 				fallthrough
 			default:
