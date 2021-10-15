@@ -27,13 +27,13 @@ func Subscribe(c MQTT.Client, topic string) MQTT.Token {
 
 var DefaultPublishHandler MQTT.MessageHandler = func(client MQTT.Client, msg MQTT.Message) {
 	topic := msg.Topic()
+	device := config.GetConfig().Device
+	topic = strings.Replace(topic, device.ProductKey+"/"+device.DeviceName, "{pk}/{dn}", 1)
 	log.Debug("topic = ", topic)
 	log.Debug("payload = ", string(msg.Payload()))
-	device := config.GetConfig().Device
-	topic = strings.Replace(topic, device.ProductKey+"/"+device.DeviceName, "aaa/bbb", 1)
-	log.Debug("topic = ", topic)
-	// /sys/a1p9xMXq5Nd/iot-echo-903-913332/thing/config/push
+
 	switch topic {
-	case "/sys/aaa/bbb/thing/config/push":
+	case "/sys/{pk}/{dn}/thing/config/push":
+		config.SaveParamsYaml([]byte(msg.Payload()))
 	}
 }

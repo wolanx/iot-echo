@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -11,18 +12,29 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var ParamsIns *Params
+var ins *Params
 
 func init() {
-	NewParams()
+	LoadParams()
 }
 
-func NewParams() *Params {
+func GetParams() *Params {
+	return ins
+}
+
+func LoadParams() {
 	yml := util.FileGetContents(Dir + "/params.yaml")
 	params := &Params{}
 	params.Init(yml)
-	ParamsIns = params
-	return params
+	ins = params
+}
+
+func SaveParamsYaml(s []byte) {
+	err := ioutil.WriteFile(Dir+"/params.yaml", s, 0666)
+	if err != nil {
+		log.Error(err)
+	}
+	LoadParams()
 }
 
 type Params struct {

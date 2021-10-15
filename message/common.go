@@ -14,7 +14,7 @@ import (
 
 func GetMetric() string {
 	//arr := make(map[string]interface{})
-	arr := config.ParamsIns.LoadData()
+	arr := config.GetParams().LoadData()
 
 	cpuPct, memPct := getCpuMem()
 	arr["sn"] = config.GetConfig().Device.DeviceName

@@ -60,7 +60,7 @@ func Run(cmd *cobra.Command, args []string) {
 	for i := 1; ; i++ {
 		msg1 := message.GetMetric()
 		mqtt.Publish(c, topicUserUpdate, msg1)
-		time.Sleep(5 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }
 

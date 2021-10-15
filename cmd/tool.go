@@ -25,5 +25,5 @@ func init() {
 }
 
 func DoToolData(cmd *cobra.Command, args []string) {
-	config.ParamsIns.LoadData()
+	config.GetParams().LoadData()
 }
