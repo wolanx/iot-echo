@@ -2,11 +2,13 @@ package mqtt
 
 import (
 	"fmt"
+	"os/exec"
 	"strings"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
 	"github.com/zx5435/iot-echo/config"
+	"github.com/zx5435/iot-echo/util"
 )
 
 func Publish(c MQTT.Client, topic string, msg string) MQTT.Token {
@@ -25,15 +27,44 @@ func Subscribe(c MQTT.Client, topic string) MQTT.Token {
 	return token
 }
 
-var DefaultPublishHandler MQTT.MessageHandler = func(client MQTT.Client, msg MQTT.Message) {
+var DefaultPublishHandler MQTT.MessageHandler = func(c MQTT.Client, msg MQTT.Message) {
 	topic := msg.Topic()
 	device := config.GetConfig().Device
 	topic = strings.Replace(topic, device.ProductKey+"/"+device.DeviceName, "{pk}/{dn}", 1)
 	log.Debug("topic = ", topic)
 	log.Debug("payload = ", string(msg.Payload()))
 
+	if strings.Contains(topic, "/sys/{pk}/{dn}/rrpc/request/") {
+		RrpcHandle(c, topic, string(msg.Payload()))
+		return
+	}
+
 	switch topic {
 	case "/sys/{pk}/{dn}/thing/config/push":
-		config.SaveParamsYaml([]byte(msg.Payload()))
+		config.SaveParamsYaml(msg.Payload())
+	default:
+		log.Warn("miss topic = ", topic)
+	}
+}
+
+func RrpcHandle(c MQTT.Client, topic string, payload string) {
+	device := config.GetConfig().Device
+	uuid := topic[strings.LastIndex(topic, "/")+1:]
+	topicRet := "/sys/" + device.ProductKey + "/" + device.DeviceName + "/rrpc/response/" + uuid
+
+	switch payload {
+	case "LoadConfigInputs":
+		yml := util.FileGetContents(config.Dir + "/params.yaml")
+		Publish(c, topicRet, yml)
+	case "ip addr":
+		command := exec.Command("/bin/sh", "-c", "ip addr")
+		output, err := command.CombinedOutput()
+		if err != nil {
+			log.Error(err)
+		}
+		Publish(c, topicRet, string(output))
+	default:
+		log.Warn("Unknown cmd " + payload)
+		Publish(c, topicRet, "Unknown cmd "+payload)
 	}
 }

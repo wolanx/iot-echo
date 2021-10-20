@@ -37,8 +37,9 @@ func Run(cmd *cobra.Command, args []string) {
 	log.Debug("Connect ok")
 
 	mqtt.Subscribe(c, topicUserGet)
-	mqtt.Subscribe(c, "/ota/device/upgrade/"+productKey+"/"+deviceName)
-	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/push")
+	mqtt.Subscribe(c, "/ota/device/upgrade/"+productKey+"/"+deviceName) // 固件升级信息下行
+	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/push") // 云端主动下推配置信息
+	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/get_reply") // 云端响应配置信息
 	// todo restart
 
 	mqtt.Publish(c, "/ota/device/inform/"+productKey+"/"+deviceName, "0.1.0")
@@ -60,7 +61,7 @@ func Run(cmd *cobra.Command, args []string) {
 	for i := 1; ; i++ {
 		msg1 := message.GetMetric()
 		mqtt.Publish(c, topicUserUpdate, msg1)
-		time.Sleep(10 * time.Second)
+		time.Sleep(30 * time.Second)
 	}
 }
 
