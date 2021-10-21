@@ -3,5 +3,6 @@ vendor
 temp
 
 iot-echo*
+*.exe
 
 go.sum

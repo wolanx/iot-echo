@@ -2,6 +2,8 @@ module github.com/zx5435/iot-echo
 
 go 1.14
 
+replace golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190411191339-88737f569e3a
+
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.3.5
@@ -13,7 +15,6 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/takama/daemon v1.0.0
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
-	gopkg.in/gcfg.v1 v1.2.3 // indirect
-	gopkg.in/warnings.v0 v0.1.2 // indirect
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/yaml.v2 v2.4.0
 )
