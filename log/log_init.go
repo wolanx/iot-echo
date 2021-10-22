@@ -59,7 +59,7 @@ func (mf *MyFormatter) Format(entry *log.Entry) ([]byte, error) {
 	funcName := path.Ext(entry.Caller.Function)
 	funcName = funcName[1:]
 	lino := fmt.Sprintf("%s:%d", path.Base(entry.Caller.File), entry.Caller.Line)
-	b.WriteString(fmt.Sprintf("[%s] [%-10.10s] [%-15.15s] [\u001B[%dm%.4s\u001B[0m] - %s\n",
+	b.WriteString(fmt.Sprintf("[%s] [%-10.10s] [%-20.20s] [\u001B[%dm%.4s\u001B[0m] - %s\n",
 		entry.Time.Format("15:03:04.000"),
 		funcName,
 		lino,
