@@ -16,7 +16,7 @@ import (
 	"github.com/zx5435/iot-echo/util"
 )
 
-func Run(cmd *cobra.Command, args []string) {
+func Run(*cobra.Command, []string) {
 	cfg := config.GetConfig()
 	var (
 		productKey      = cfg.Device.ProductKey
@@ -29,7 +29,7 @@ func Run(cmd *cobra.Command, args []string) {
 	sig := make(chan os.Signal)
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
-	c := NewClient(productKey, deviceName, deviceSecret)
+	c := newClient(productKey, deviceName, deviceSecret)
 
 	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
@@ -37,8 +37,8 @@ func Run(cmd *cobra.Command, args []string) {
 	log.Debug("Connect ok")
 
 	mqtt.Subscribe(c, topicUserGet)
-	mqtt.Subscribe(c, "/ota/device/upgrade/"+productKey+"/"+deviceName) // 固件升级信息下行
-	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/push") // 云端主动下推配置信息
+	mqtt.Subscribe(c, "/ota/device/upgrade/"+productKey+"/"+deviceName)            // 固件升级信息下行
+	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/push")      // 云端主动下推配置信息
 	mqtt.Subscribe(c, "/sys/"+productKey+"/"+deviceName+"/thing/config/get_reply") // 云端响应配置信息
 	// todo restart
 
@@ -65,7 +65,7 @@ func Run(cmd *cobra.Command, args []string) {
 	}
 }
 
-func NewClient(productKey string, deviceName string, deviceSecret string) MQTT.Client {
+func newClient(productKey string, deviceName string, deviceSecret string) MQTT.Client {
 	cfg := config.GetConfig()
 	var url string
 	if cfg.Provider == "iothub-echo" {
