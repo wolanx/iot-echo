@@ -12,6 +12,7 @@ type daemon struct {
 }
 
 func (p *daemon) Start(s service.Service) error {
+	log.Info("start")
 	go func() {
 		web.DefaultWeb()
 	}()
@@ -19,6 +20,7 @@ func (p *daemon) Start(s service.Service) error {
 }
 
 func (p *daemon) Stop(s service.Service) error {
+	log.Info("stop")
 	return nil
 }
 
