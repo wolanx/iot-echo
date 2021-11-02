@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	rootCmd.AddCommand(initCmd)
+}
+
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialize environment",
@@ -13,8 +17,4 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init todo")
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(initCmd)
 }

@@ -8,6 +8,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	rootCmd.AddCommand(runCmd)
+	rootCmd.AddCommand(statusCmd)
+	rootCmd.AddCommand(installCmd)
+	rootCmd.AddCommand(removeCmd)
+	rootCmd.AddCommand(startCmd)
+	rootCmd.AddCommand(stopCmd)
+	rootCmd.AddCommand(restartCmd)
+}
+
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Service management",
@@ -26,7 +36,7 @@ var statusCmd = &cobra.Command{
 	Long:  "Long description.",
 	Run: func(cmd *cobra.Command, args []string) {
 		msg, err := sign.Status()
-		err_degrade(err, "status")
+		errDegrade(err, "status")
 		fmt.Println(msg)
 	},
 }
@@ -82,27 +92,17 @@ var restartCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	rootCmd.AddCommand(runCmd)
-	rootCmd.AddCommand(statusCmd)
-	rootCmd.AddCommand(installCmd)
-	rootCmd.AddCommand(removeCmd)
-	rootCmd.AddCommand(startCmd)
-	rootCmd.AddCommand(stopCmd)
-	rootCmd.AddCommand(restartCmd)
-}
-
 func DoStart(*cobra.Command, []string) {
 	err := sign.Start()
-	err_degrade(err, "start")
+	errDegrade(err, "start")
 }
 
 func DoStop(*cobra.Command, []string) {
 	err := sign.Stop()
-	err_degrade(err, "stop")
+	errDegrade(err, "stop")
 }
 
-func err_degrade(err error, cmd string) {
+func errDegrade(err error, cmd string) {
 	if err == nil {
 		return
 	}

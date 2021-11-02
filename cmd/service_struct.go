@@ -3,26 +3,10 @@ package cmd
 import (
 	"github.com/kardianos/service"
 	log "github.com/sirupsen/logrus"
-	"github.com/zx5435/iot-echo/web"
+	"github.com/zx5435/iot-echo/core"
 )
 
 var sign service.Service
-
-type daemon struct {
-}
-
-func (p *daemon) Start(s service.Service) error {
-	log.Info("start")
-	go func() {
-		web.DefaultWeb()
-	}()
-	return nil
-}
-
-func (p *daemon) Stop(s service.Service) error {
-	log.Info("stop")
-	return nil
-}
 
 func init() {
 	svcConfig := &service.Config{
@@ -38,4 +22,20 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+type daemon struct {
+}
+
+func (p *daemon) Start(s service.Service) error {
+	log.Info("start")
+	// 真正开始干事
+	go core.DefaultWeb()
+	go core.Run()
+	return nil
+}
+
+func (p *daemon) Stop(s service.Service) error {
+	log.Info("stop")
+	return nil
 }

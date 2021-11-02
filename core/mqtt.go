@@ -1,4 +1,4 @@
-package debug
+package core
 
 import (
 	"fmt"
@@ -9,14 +9,13 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"github.com/zx5435/iot-echo/config"
 	"github.com/zx5435/iot-echo/message"
 	"github.com/zx5435/iot-echo/mqtt"
 	"github.com/zx5435/iot-echo/util"
 )
 
-func Run(*cobra.Command, []string) {
+func Run() {
 	cfg := config.GetConfig()
 	var (
 		productKey      = cfg.Device.ProductKey
@@ -68,16 +67,12 @@ func Run(*cobra.Command, []string) {
 func newClient(productKey string, deviceName string, deviceSecret string) MQTT.Client {
 	cfg := config.GetConfig()
 	var url string
-	if cfg.Provider == "iothub-echo" {
-		if cfg.Server.Tls {
-			url = "tls://" + cfg.Server.Host + ":1883"
-		} else {
-			url = "tcp://" + cfg.Server.Host + ":1883"
-		}
+	if cfg.Server.Tls {
+		url = "tls://" + cfg.Server.Host + ":1883"
 	} else {
-		url = "tls://" + cfg.Device.ProductKey + ".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883"
+		url = "tcp://" + cfg.Server.Host + ":1883"
 	}
-	fmt.Println(url)
+	log.Info(url)
 
 	opt := MQTT.NewClientOptions().AddBroker(url)
 	auth := util.CalculateSign("go_device_id_0001", productKey, deviceName, deviceSecret, "1528018257135")
