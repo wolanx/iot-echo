@@ -135,7 +135,7 @@ func (mb *rtuSerialTransporter) Send(aduRequest []byte) (aduResponse []byte, err
 	//We first read the minimum length and then read either the full package
 	//or the error package, depending on the error status (byte 2 of the response)
 	n, err = io.ReadAtLeast(mb.port, data[:], rtuMinSize)
-	log.Warn("n", n)
+	log.Warn("n ", n)
 	if err != nil {
 		return
 	}

@@ -16,6 +16,9 @@ var v *Config
 
 func init() {
 	dir, _ := os.UserHomeDir()
+	if dir == "/" {
+		dir = "/home/root" // fixme 拿不到$HOME问题
+	}
 	Dir = dir + "/.iot-echo"
 	if _, err := os.Stat(Dir); err != nil {
 		err := os.Mkdir(Dir, os.ModeDir)
@@ -28,7 +31,7 @@ func init() {
 
 func GetConfig() *Config {
 	if v == nil {
-		fmt.Println("config init.")
+		fmt.Println("config init.", Dir)
 		maps := viper.AllSettings()
 		_ = mapstructure.Decode(maps, &v)
 	}
