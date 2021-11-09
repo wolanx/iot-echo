@@ -17,6 +17,7 @@ func GetMetric() string {
 	arr := config.GetParams().LoadData()
 
 	cpuPct, memPct := getCpuMem()
+	arr["ts"] = int32(time.Now().Unix())
 	arr["sn"] = config.GetConfig().Device.DeviceName
 	arr["cpu"] = f2(cpuPct)
 	arr["mem"] = f2(memPct)
