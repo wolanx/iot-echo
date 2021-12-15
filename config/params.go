@@ -7,6 +7,8 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/zx5435/iot-echo/core/calc"
+	"github.com/zx5435/iot-echo/message"
 	"github.com/zx5435/iot-echo/protocol/modbus"
 	"github.com/zx5435/iot-echo/util"
 	"gopkg.in/yaml.v2"
@@ -52,6 +54,7 @@ type Channel struct {
 
 type Attribute struct {
 	Name           string
+	Value          string
 	ChannelRefName string `yaml:"channelRefName"`
 	SlaveId        int    `yaml:"slaveId"`
 	Address        int
@@ -66,14 +69,6 @@ type Client struct {
 type DataGroup struct {
 	Name   string
 	Client modbus.Client
-	Points []Point
-}
-
-type Point struct {
-	Name     string
-	SlaveId  byte
-	Address  uint16
-	DataType string
 }
 
 func (p *Params) Init(s string) {
@@ -89,31 +84,6 @@ func (p *Params) Init(s string) {
 			Name:   channel.Name,
 			Client: createClientByChannel(channel),
 		}
-	}
-	for _, attribute := range p.Attributes {
-		group, ok := p.DataGroups[attribute.ChannelRefName]
-		if !ok {
-			log.Error("ChannelRefName not found")
-			break
-		}
-		group.Points = append(group.Points, Point{
-			Name:     attribute.Name,
-			SlaveId:  byte(attribute.SlaveId),
-			Address:  uint16(attribute.Address),
-			DataType: attribute.DataType,
-		})
-	}
-}
-
-func (p Params) Print() {
-	for _, channel := range p.Channels {
-		fmt.Printf("%+v\n", channel)
-	}
-	for _, attribute := range p.Attributes {
-		fmt.Printf("%+v\n", attribute)
-	}
-	for k, group := range p.DataGroups {
-		fmt.Printf("%s: %+v\n", k, group.Points)
 	}
 }
 
@@ -139,9 +109,18 @@ func createClientByChannel(c Channel) modbus.Client {
 
 func (p *Params) LoadData() map[string]interface{} {
 	ret := make(map[string]interface{})
-	for _, group := range p.DataGroups {
-		for _, point := range group.Points {
-			log.Debugf("%s * %+v", group.Name, point)
+
+	cpuPct, memPct := message.GetCpuMem()
+	ret["cpu"] = message.F2(cpuPct)
+	ret["mem"] = message.F2(memPct)
+
+	for _, point := range p.Attributes {
+		if point.Value != "" {
+			ret[point.Name] = calc.Calc(point.Value, ret)
+		} else {
+			gName := point.ChannelRefName
+			client := p.DataGroups[gName].Client
+			log.Debugf("%s * %+v", gName, point)
 
 			var (
 				xVal []byte
@@ -151,14 +130,14 @@ func (p *Params) LoadData() map[string]interface{} {
 
 			switch point.DataType {
 			case "float":
-				xVal, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 2)
+				xVal, err = client.ReadHoldingRegisters(byte(point.SlaveId), uint16(point.Address), 2)
 				if err == nil {
 					val = util.Byte4ToFloat32(xVal)
 				}
 			case "int":
 				fallthrough
 			default:
-				xVal, err = group.Client.ReadHoldingRegisters(point.SlaveId, point.Address, 1)
+				xVal, err = client.ReadHoldingRegisters(byte(point.SlaveId), uint16(point.Address), 1)
 				if err == nil {
 					val = util.Byte2ToInt(xVal)
 				}
@@ -170,7 +149,18 @@ func (p *Params) LoadData() map[string]interface{} {
 			ret[point.Name] = val
 		}
 	}
+
 	j, _ := json.MarshalIndent(ret, "", "  ")
 	fmt.Println(string(j))
 	return ret
+}
+
+func GetMetric() string {
+	//arr := make(map[string]interface{})
+	arr := GetParams().LoadData()
+
+	arr["ts"] = int32(time.Now().Unix())
+	arr["sn"] = GetConfig().Device.DeviceName
+	ret, _ := json.Marshal(arr)
+	return string(ret)
 }

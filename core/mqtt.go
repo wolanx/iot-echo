@@ -10,7 +10,6 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
 	"github.com/zx5435/iot-echo/config"
-	"github.com/zx5435/iot-echo/message"
 	"github.com/zx5435/iot-echo/mqtt"
 	"github.com/zx5435/iot-echo/util"
 )
@@ -58,7 +57,7 @@ func Run() {
 	}()
 
 	for i := 1; ; i++ {
-		msg1 := message.GetMetric()
+		msg1 := config.GetMetric()
 		mqtt.Publish(c, topicUserUpdate, msg1)
 		time.Sleep(30 * time.Second)
 	}
