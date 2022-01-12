@@ -8,8 +8,8 @@ import (
 	"unsafe"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/zx5435/iot-echo/protocol/crc16"
-	"github.com/zx5435/iot-echo/protocol/modbus"
+	"github.com/wolanx/iot-echo/pkg/protocol/crc16"
+	"github.com/wolanx/iot-echo/pkg/protocol/modbus"
 )
 
 func IsLittleEndian() bool {

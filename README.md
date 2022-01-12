@@ -4,8 +4,8 @@
 
 项目 | 地址 | 描述
 ----|-----|-----
-iot-echo | [github.com/zx5435/iot-echo](https://github.com/zx5435/iot-echo) | 设备端(go) 采集数据，发数据
-iothub-echo | [github.com/zx5435/iothub-echo](https://github.com/zx5435/iothub-echo) | 服务端(java) 收数据，处理数据
+iot-echo | [github.com/wolanx/iot-echo](https://github.com/wolanx/iot-echo) | 设备端(go) 采集数据，发数据
+iothub-echo | [github.com/wolanx/iothub-echo](https://github.com/wolanx/iothub-echo) | 服务端(java) 收数据，处理数据
 
 
 ## Feature

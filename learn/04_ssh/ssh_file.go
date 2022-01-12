@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/zx5435/iot-echo/util"
+	"github.com/wolanx/iot-echo/pkg/util"
 	"golang.org/x/crypto/ssh"
 )
 

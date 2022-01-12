@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/zx5435/iot-echo/config"
+	"github.com/wolanx/iot-echo/pkg/config"
 )
 
 var infoCmd = &cobra.Command{

@@ -5,8 +5,7 @@ import (
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/zx5435/iot-echo/core/calc/parser"
+	"github.com/wolanx/iot-echo/pkg/core/calc/parser"
 )
 
 type calcVisitor struct {
@@ -92,4 +91,3 @@ func Calc(input string, store map[string]interface{}) interface{} {
 	a := p.Expr().Accept(v)
 	return a
 }
-

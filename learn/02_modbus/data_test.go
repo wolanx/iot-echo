@@ -5,7 +5,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/zx5435/iot-echo/protocol/crc16"
+	"github.com/wolanx/iot-echo/pkg/protocol/crc16"
 )
 
 func TestAsd(t *testing.T) {

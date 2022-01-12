@@ -9,8 +9,8 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	_ "github.com/zx5435/iot-echo/log"
-	"github.com/zx5435/iot-echo/protocol/modbus"
+	_ "github.com/wolanx/iot-echo/pkg/log"
+	"github.com/wolanx/iot-echo/pkg/protocol/modbus"
 )
 
 var tty *int

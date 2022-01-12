@@ -7,7 +7,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	_ "github.com/zx5435/iot-echo/log"
+	_ "github.com/wolanx/iot-echo/pkg/log"
 )
 
 var Dir string

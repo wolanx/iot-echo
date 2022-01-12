@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/zx5435/iot-echo/config"
+	"github.com/wolanx/iot-echo/pkg/config"
 
 	"github.com/spf13/viper"
 )

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/zx5435/iot-echo/cmd"
-	_ "github.com/zx5435/iot-echo/log"
+	"github.com/wolanx/iot-echo/cmd"
+	_ "github.com/wolanx/iot-echo/pkg/log"
 )
 
 func main() {

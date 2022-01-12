@@ -7,8 +7,8 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
-	"github.com/zx5435/iot-echo/config"
-	"github.com/zx5435/iot-echo/util"
+	"github.com/wolanx/iot-echo/pkg/config"
+	"github.com/wolanx/iot-echo/pkg/util"
 )
 
 func Publish(c MQTT.Client, topic string, msg string) MQTT.Token {

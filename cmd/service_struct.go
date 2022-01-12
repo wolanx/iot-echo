@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/kardianos/service"
 	log "github.com/sirupsen/logrus"
-	"github.com/zx5435/iot-echo/core"
+	"github.com/wolanx/iot-echo/pkg/core"
 )
 
 var sign service.Service

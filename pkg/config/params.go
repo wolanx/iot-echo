@@ -7,10 +7,10 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/zx5435/iot-echo/core/calc"
-	"github.com/zx5435/iot-echo/message"
-	"github.com/zx5435/iot-echo/protocol/modbus"
-	"github.com/zx5435/iot-echo/util"
+	"github.com/wolanx/iot-echo/pkg/core/calc"
+	"github.com/wolanx/iot-echo/pkg/message"
+	"github.com/wolanx/iot-echo/pkg/protocol/modbus"
+	"github.com/wolanx/iot-echo/pkg/util"
 	"gopkg.in/yaml.v2"
 )
 

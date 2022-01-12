@@ -1,4 +1,4 @@
-module github.com/zx5435/iot-echo
+module github.com/wolanx/iot-echo
 
 go 1.14
 

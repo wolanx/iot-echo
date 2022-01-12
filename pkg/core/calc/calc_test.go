@@ -3,7 +3,7 @@ package calc
 import (
 	"fmt"
 
-	_ "github.com/zx5435/iot-echo/log"
+	_ "github.com/wolanx/iot-echo/pkg/log"
 )
 
 var store = make(map[string]interface{})

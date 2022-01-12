@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/zx5435/iot-echo/config"
-	"github.com/zx5435/iot-echo/core"
+	"github.com/wolanx/iot-echo/pkg/config"
+	"github.com/wolanx/iot-echo/pkg/core"
 )
 
 func init() {

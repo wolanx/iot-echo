@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/zx5435/iot-echo/config"
+	"github.com/wolanx/iot-echo/pkg/config"
 )
 
 func TestAsda(t *testing.T) {
