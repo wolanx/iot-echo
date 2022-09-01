@@ -1,0 +1,8 @@
+provider: aliyun
+server:
+  host: xxx
+  tls: true
+device:
+  productKey: xxx
+  deviceName: xxx
+  deviceSecret: xxx

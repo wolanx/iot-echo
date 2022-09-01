@@ -30,7 +30,7 @@ type daemon struct {
 func (p *daemon) Start(s service.Service) error {
 	log.Info("start")
 	// 真正开始干事
-	go core.DefaultWeb()
+	//go core.DefaultWeb()
 	go core.Run()
 	return nil
 }

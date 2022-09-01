@@ -1,0 +1,10 @@
+channels:
+  - name: tcpModbusLocal
+    network: tcp
+    endpoint: localhost:502
+    protocol: modbus
+attributes:
+  - name: running
+    value: 1
+  - name: c
+    value: cpu * 2
