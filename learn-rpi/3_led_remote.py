@@ -3,10 +3,16 @@
     NEC协议
     文档 https://pan.baidu.com/s/1MteiSMpdFRif2KoJpL5TNg    提取码：t52l
     淘宝 https://item.taobao.com/item.htm?spm=a1z09.2.0.0.67212e8dNqGDJW&id=548823910606&_u=knhqssn86e7
+    一起玩转树莓派（19）—— 红外遥控控制实验  https://my.oschina.net/u/2340880/blog/5310343
 
 控制 led RGB
     “1”    “2”    “3”
      45    46     47
+
+sudo apt update
+sudo apt install lirc
+sudo apt-get install liblircclient-dev
+sudo apt-get install python3-lirc
 """
 import RPi.GPIO as GPIO
 
