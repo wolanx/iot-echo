@@ -31,16 +31,16 @@ func CalculateSign(clientId, productKey, deviceName, deviceSecret, timeStamp str
 	password := fmt.Sprintf("%02x", mac.Sum(nil))
 	username := deviceName + "&" + productKey
 
-	MQTTClientId := bytes.Buffer{}
-	MQTTClientId.WriteString(clientId)
+	sid := bytes.Buffer{}
+	sid.WriteString(clientId)
 	// hmac, use sha1; securemode=2 means TLS connection
-	MQTTClientId.WriteString("|securemode=2,_v=paho-go-1.0.0,signmethod=hmacsha1,timestamp=")
-	MQTTClientId.WriteString(timeStamp)
-	MQTTClientId.WriteString("|")
+	sid.WriteString("|securemode=2,_v=paho-go-1.0.0,signmethod=hmacsha1,timestamp=")
+	sid.WriteString(timeStamp)
+	sid.WriteString("|")
 
 	return AuthInfo{
 		Username:     username,
 		Password:     password,
-		MqttClientId: MQTTClientId.String(),
+		MqttClientId: sid.String(),
 	}
 }

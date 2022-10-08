@@ -8,7 +8,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/wolanx/iot-echo/pkg/core/calc"
-	"github.com/wolanx/iot-echo/pkg/message"
 	"github.com/wolanx/iot-echo/pkg/protocol/modbus"
 	"github.com/wolanx/iot-echo/pkg/util"
 	"gopkg.in/yaml.v2"
@@ -110,9 +109,9 @@ func createClientByChannel(c Channel) modbus.Client {
 func (p *Params) LoadData() map[string]interface{} {
 	ret := make(map[string]interface{})
 
-	cpuPct, memPct := message.GetCpuMem()
-	ret["cpu"] = message.F2(cpuPct)
-	ret["mem"] = message.F2(memPct)
+	cpuPct, memPct := util.GetCpuMem()
+	ret["cpu"] = util.Less6(cpuPct)
+	ret["mem"] = util.Less6(memPct)
 
 	for _, point := range p.Attributes {
 		if point.Value != "" {

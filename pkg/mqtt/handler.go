@@ -35,7 +35,7 @@ var DefaultPublishHandler MQTT.MessageHandler = func(c MQTT.Client, msg MQTT.Mes
 	log.Debug("payload = ", string(msg.Payload()))
 
 	if strings.Contains(topic, "/sys/{pk}/{dn}/rrpc/request/") {
-		RrpcHandle(c, topic, string(msg.Payload()))
+		RRpcHandle(c, topic, string(msg.Payload()))
 		return
 	}
 
@@ -47,7 +47,7 @@ var DefaultPublishHandler MQTT.MessageHandler = func(c MQTT.Client, msg MQTT.Mes
 	}
 }
 
-func RrpcHandle(c MQTT.Client, topic string, payload string) {
+func RRpcHandle(c MQTT.Client, topic string, payload string) {
 	device := config.GetConfig().Device
 	uuid := topic[strings.LastIndex(topic, "/")+1:]
 	topicRet := "/sys/" + device.ProductKey + "/" + device.DeviceName + "/rrpc/response/" + uuid

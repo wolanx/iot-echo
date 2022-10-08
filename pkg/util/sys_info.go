@@ -1,8 +1,6 @@
-package message
+package util
 
 import (
-	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -10,10 +8,6 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
-func F2(in float64) float64 {
-	out, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", in), 64)
-	return out
-}
 func GetCpuMem() (float64, float64) {
 	percent, _ := cpu.Percent(time.Second, false)
 	memInfo, _ := mem.VirtualMemory()

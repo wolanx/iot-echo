@@ -1,6 +1,10 @@
 package util
 
-import "math"
+import (
+	"fmt"
+	"math"
+	"strconv"
+)
 
 func bytesToUint32(b []byte) uint32 {
 	_ = b[3]
@@ -15,4 +19,10 @@ func Byte2ToInt(b []byte) int {
 	_ = b[1]
 	u := uint16(b[0])<<8 | uint16(b[1])
 	return int(u)
+}
+
+// Less6 6位有效数
+func Less6(in float64) float64 {
+	out, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", in), 64)
+	return out
 }
