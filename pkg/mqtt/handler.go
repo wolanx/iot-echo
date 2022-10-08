@@ -2,13 +2,13 @@ package mqtt
 
 import (
 	"fmt"
+	"github.com/wolanx/iot-echo/pkg/util"
 	"os/exec"
 	"strings"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
 	"github.com/wolanx/iot-echo/pkg/config"
-	"github.com/wolanx/iot-echo/pkg/util"
 )
 
 func Publish(c MQTT.Client, topic string, msg string) MQTT.Token {

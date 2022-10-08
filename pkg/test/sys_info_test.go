@@ -1,14 +1,15 @@
-package util
+package test
 
 import (
 	"fmt"
+	"github.com/wolanx/iot-echo/pkg/util"
 	"testing"
 
 	"github.com/wolanx/iot-echo/pkg/config"
 )
 
 func TestAsd(t *testing.T) {
-	a, b := GetCpuMem()
+	a, b := util.GetCpuMem()
 	fmt.Println("cpu:", a)
 	fmt.Println("mem:", b)
 }
@@ -18,5 +19,5 @@ func TestGetMetric(t *testing.T) {
 }
 
 func TestGetDiskPercent(t *testing.T) {
-	fmt.Println("disk:", GetDiskPercent())
+	fmt.Println("disk:", util.GetDiskPercent())
 }
