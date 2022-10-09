@@ -16,7 +16,9 @@ FROM alpine
 LABEL author=github.com/wolanx
 ENV TZ utc-8
 
-RUN apk add --no-cache lua
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN apk add --no-cache lua5.4
+RUN cp /usr/bin/lua5.4 /user/bin/lua
 
 WORKDIR /www
 
