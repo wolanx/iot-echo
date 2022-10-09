@@ -1,4 +1,4 @@
-FROM golang:1.17.5 AS builder
+FROM golang:1.19.2 AS builder
 
 ENV GOPROXY https://goproxy.cn,direct
 
@@ -15,6 +15,8 @@ FROM alpine
 
 LABEL author=github.com/wolanx
 ENV TZ utc-8
+
+RUN apk add --no-cache lua
 
 WORKDIR /www
 

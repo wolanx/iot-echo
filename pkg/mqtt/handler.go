@@ -21,7 +21,7 @@ func Publish(c MQTT.Client, topic string, msg string) MQTT.Token {
 
 func Subscribe(c MQTT.Client, topic string) MQTT.Token {
 	token := c.Subscribe(topic, 0, nil)
-	token.Wait()
+	//token.Wait()
 
 	log.Info("Subscribe " + topic + " success")
 	return token

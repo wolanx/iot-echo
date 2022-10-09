@@ -86,3 +86,14 @@ slaveId: 1 # 0x01
 address: 20
 dataType: float # len 2
 ```
+
+### script
+
+```yaml
+- name: bbb-a
+  namespace: bbb
+  script: lua hvac.lua a1
+- name: bbb-b
+  namespace: bbb
+  script: lua hvac.lua a2
+```

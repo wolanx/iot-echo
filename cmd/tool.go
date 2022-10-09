@@ -24,7 +24,7 @@ var dataCmd = &cobra.Command{
 	Short: "Fetch data",
 	Long:  "Long description.",
 	Run: func(*cobra.Command, []string) {
-		config.GetParams().LoadData()
+		config.GetParams().LoadData("sn001")
 	},
 }
 

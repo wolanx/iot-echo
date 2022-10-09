@@ -15,7 +15,10 @@ func TestAsd(t *testing.T) {
 }
 
 func TestGetMetric(t *testing.T) {
-	fmt.Println(config.GetMetric())
+	msgArr := config.GetMetric()
+	for idx := range msgArr {
+		fmt.Println(msgArr[idx])
+	}
 }
 
 func TestGetDiskPercent(t *testing.T) {

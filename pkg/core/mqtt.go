@@ -57,8 +57,10 @@ func Run() {
 	}()
 
 	for i := 1; ; i++ {
-		msg1 := config.GetMetric()
-		mqtt.Publish(c, topicUserUpdate, msg1)
+		msgArr := config.GetMetric()
+		for idx := range msgArr {
+			mqtt.Publish(c, topicUserUpdate, msgArr[idx])
+		}
 		time.Sleep(30 * time.Second)
 	}
 }

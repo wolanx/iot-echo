@@ -25,7 +25,7 @@ func (c *calcVisitor) VisitIdExpr(ctx *parser.IdExprContext) interface{} {
 	v := c.store[t]
 
 	if v1, ok := v.(float64); ok {
-		log.Printf("%s = %f", t, v1)
+		//log.Printf("%s = %f", t, v1)
 		return v1
 	}
 	return nil

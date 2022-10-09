@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strconv"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -52,8 +54,14 @@ type Channel struct {
 }
 
 type Attribute struct {
-	Name           string
-	Value          string
+	Namespace string `yaml:"namespace"` // 名字空间，sn_xx，后缀
+	Name      string
+	Value     string // 计算值
+
+	// 脚本获取
+	Script string
+
+	// 协议相关
 	ChannelRefName string `yaml:"channelRefName"`
 	SlaveId        int    `yaml:"slaveId"`
 	Address        int
@@ -106,24 +114,47 @@ func createClientByChannel(c Channel) modbus.Client {
 	return nil
 }
 
-func (p *Params) LoadData() map[string]interface{} {
-	ret := make(map[string]interface{})
+func (p *Params) LoadData(sn string) map[string]map[string]interface{} {
+	map2 := make(map[string]map[string]interface{})
 
+	ts := int32(time.Now().Unix())
 	cpuPct, memPct := util.GetCpuMem()
-	ret["cpu"] = util.Less6(cpuPct)
-	ret["mem"] = util.Less6(memPct)
 
 	for _, point := range p.Attributes {
+		snAll := getSnAll(sn, point.Namespace)
+		map1 := make(map[string]interface{})
+		map1["ts"] = ts
+		map1["sn"] = snAll
+		map1["cpu"] = util.Less6(cpuPct)
+		map1["mem"] = util.Less6(memPct)
+		map2[snAll] = map1
+	}
+
+	for _, point := range p.Attributes {
+		snAll := getSnAll(sn, point.Namespace)
+		var val interface{}
+		map1 := map2[snAll]
+
 		if point.Value != "" {
-			ret[point.Name] = calc.Calc(point.Value, ret)
+			// 计算值
+			val = calc.Calc(point.Value, map1)
+		} else if point.Script != "" {
+			// 脚本获取
+			valStr := util.RunShell(point.Script)
+			var err interface{}
+			val, err = strconv.ParseFloat(strings.TrimSpace(valStr), 64)
+			if err != nil {
+				fmt.Println("script error in: ", valStr)
+				continue
+			}
 		} else {
+			// 协议值
 			gName := point.ChannelRefName
 			client := p.DataGroups[gName].Client
 			log.Debugf("%s * %+v", gName, point)
 
 			var (
 				xVal []byte
-				val  interface{}
 				err  error
 			)
 
@@ -145,21 +176,31 @@ func (p *Params) LoadData() map[string]interface{} {
 				log.Warn(err)
 			}
 			log.Infof("%s [% x] = %v", point.Name, xVal, val)
-			ret[point.Name] = val
 		}
+		map1[point.Name] = val
 	}
 
-	j, _ := json.MarshalIndent(ret, "", "  ")
+	j, _ := json.MarshalIndent(map2, "", "  ")
 	fmt.Println(string(j))
-	return ret
+	return map2
 }
 
-func GetMetric() string {
-	//arr := make(map[string]interface{})
-	arr := GetParams().LoadData()
+func getSnAll(sn string, suffix string) string {
+	if suffix == "" {
+		return sn
+	} else {
+		return sn + "_" + suffix
+	}
+}
 
-	arr["ts"] = int32(time.Now().Unix())
-	arr["sn"] = GetConfig().Device.DeviceName
-	ret, _ := json.Marshal(arr)
-	return string(ret)
+func GetMetric() []string {
+	map2 := GetParams().LoadData(GetConfig().Device.DeviceName)
+
+	ret := []string{}
+	for _, map1 := range map2 {
+		aaa, _ := json.Marshal(map1)
+		ret = append(ret, string(aaa))
+	}
+
+	return ret
 }
