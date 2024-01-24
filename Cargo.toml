@@ -3,16 +3,18 @@ name = "mqtt-example"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-paho-mqtt = { version = "0.12", default-features = false, features=["bundled"] }
-hmac-sha256 = "0.1.6"
-hex = "0.4.3"
-hex-literal = "0.3.1"
-serde_yaml = "0.9.30"
-serde = { version = "1.0.195", features = ["derive"] }
-#openssl = "0.10"
-#openssl-sys = "0.9"
 
 [[bin]]
 name = "mqtt_basic_demo"
 path = "src/mqtt-basic-demo/main.rs"
+
+
+[dependencies]
+paho-mqtt = { version = "0.12", default-features = false, features=["bundled"] }
+#
+serde = { version = "1.0.195", features = ["derive"] }
+serde_yaml = "0.9.30"
+#
+hex = "0.4.3"
+hex-literal = "0.3.1"
+hmac-sha256 = "0.1.6"
